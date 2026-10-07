@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import Customer from "../models/customer.model.js";
+import { serverError } from "../utils/serverError.js";
 import { generateToken, cookieOptions } from "../utils/generateToken.js";
 
 const publicCustomer = (customer) => {
@@ -38,7 +39,7 @@ export const registerCustomer = async (req, res) => {
       customer: publicCustomer(customer),
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    serverError(res, error);
   }
 };
 
@@ -70,7 +71,7 @@ export const loginCustomer = async (req, res) => {
       customer: publicCustomer(customer),
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    serverError(res, error);
   }
 };
 

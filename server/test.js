@@ -22,6 +22,13 @@ const post = (path, body, cookie) =>
     body: JSON.stringify(body),
   });
 
+const send = (method, path, body, cookie) =>
+  fetch(BASE + path, {
+    method,
+    headers: { "Content-Type": "application/json", ...(cookie && { Cookie: cookie }) },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
 const get = (path, cookie) =>
   fetch(BASE + path, { headers: { ...(cookie && { Cookie: cookie }) } });
 
@@ -96,7 +103,9 @@ try {
   const keyboardId = body.product._id;
 
   res = await post("/products", novel);
+  body = await res.json();
   assert.equal(res.status, 201, "second product creation should succeed");
+  const novelId = body.product._id;
 
   res = await post("/products", { ...keyboard, name: undefined });
   assert.equal(res.status, 400, "missing name should be rejected");
@@ -155,6 +164,76 @@ try {
 
   res = await get("/products/507f1f77bcf86cd799439011");
   assert.equal(res.status, 404, "a valid but unknown id should be a 404");
+
+  res = await post("/customers/login", { email: customer.email, password: customer.password });
+  const session = res.headers.getSetCookie()[0].split(";")[0];
+
+  res = await post(`/wishlist/${keyboardId}`, {});
+  assert.equal(res.status, 401, "wishlist needs a login");
+
+  res = await post(`/wishlist/${keyboardId}`, {}, session);
+  assert.equal(res.status, 201, "wishlist add should succeed");
+
+  res = await post(`/wishlist/${keyboardId}`, {}, session);
+  assert.equal(res.status, 409, "saving the same product twice should be a 409");
+
+  res = await post("/wishlist/not-an-id", {}, session);
+  assert.equal(res.status, 400, "malformed id should be a 400");
+
+  res = await post("/wishlist/507f1f77bcf86cd799439011", {}, session);
+  assert.equal(res.status, 404, "unknown product should be a 404");
+
+  res = await get("/wishlist", session);
+  body = await res.json();
+  assert.equal(body.count, 1, "wishlist should hold one product");
+  assert.equal(body.wishlist[0].name, keyboard.name, "wishlist should be populated");
+
+  res = await send("DELETE", `/wishlist/${keyboardId}`, null, session);
+  assert.equal(res.status, 200, "wishlist remove should succeed");
+
+  res = await send("DELETE", `/wishlist/${keyboardId}`, null, session);
+  assert.equal(res.status, 404, "removing something not saved should be a 404");
+
+  res = await send("PATCH", `/wishlist/${keyboardId}/toggle`, null, session);
+  body = await res.json();
+  assert.equal(body.saved, true, "toggle should save");
+
+  res = await send("PATCH", `/wishlist/${keyboardId}/toggle`, null, session);
+  body = await res.json();
+  assert.equal(body.saved, false, "second toggle should unsave");
+
+  res = await post(`/cart/${keyboardId}`, {});
+  assert.equal(res.status, 401, "cart needs a login");
+
+  res = await post(`/cart/${keyboardId}`, {}, session);
+  body = await res.json();
+  assert.equal(body.cart[0].quantity, 1, "first add should be quantity 1");
+
+  res = await post(`/cart/${keyboardId}`, {}, session);
+  body = await res.json();
+  assert.equal(body.cart.length, 1, "adding again should not create a second row");
+  assert.equal(body.cart[0].quantity, 2, "adding again should bump the quantity");
+
+  res = await get("/cart", session);
+  body = await res.json();
+  assert.equal(body.cart[0].product.name, keyboard.name, "cart should be populated");
+
+  res = await send("PATCH", `/cart/${keyboardId}`, { quantity: 11 }, session);
+  assert.equal(res.status, 400, "quantity above stock should be rejected");
+
+  res = await send("PATCH", `/cart/${keyboardId}`, { quantity: 0 }, session);
+  assert.equal(res.status, 400, "quantity below 1 should be rejected");
+
+  res = await send("PATCH", `/cart/${novelId}`, { quantity: 1 }, session);
+  assert.equal(res.status, 404, "updating something not in the cart should be a 404");
+
+  res = await send("PATCH", `/cart/${keyboardId}`, { quantity: 5 }, session);
+  body = await res.json();
+  assert.equal(body.cart[0].quantity, 5, "quantity update should stick");
+
+  res = await send("DELETE", `/cart/${keyboardId}`, null, session);
+  body = await res.json();
+  assert.equal(body.cart.length, 0, "remove should empty the cart");
 
   console.log("all checks passed");
 } finally {

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Product from "../models/product.model.js";
+import { serverError } from "../utils/serverError.js";
 
 const SORT_OPTIONS = {
   price_asc: { price: 1 },
@@ -36,7 +37,7 @@ export const createProduct = async (req, res) => {
       return res.status(400).json({ message: firstError.message });
     }
 
-    res.status(500).json({ message: "Server error", error: error.message });
+    serverError(res, error);
   }
 };
 
@@ -60,7 +61,7 @@ export const getProducts = async (req, res) => {
 
     res.json({ success: true, count: products.length, products });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    serverError(res, error);
   }
 };
 
@@ -80,6 +81,6 @@ export const getProductById = async (req, res) => {
 
     res.json({ success: true, product });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    serverError(res, error);
   }
 };
