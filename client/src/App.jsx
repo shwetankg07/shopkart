@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMe } from "./store/authSlice.js";
+import { loadCart } from "./store/cartSlice.js";
+import { loadSavedIds } from "./store/wishlistSlice.js";
 import Layout from "./components/Layout.jsx";
 import PageTransition from "./components/PageTransition.jsx";
 import BootScreen from "./components/BootScreen.jsx";
+import Toaster from "./components/Toaster.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
 import Landing from "./pages/Landing.jsx";
@@ -13,10 +16,13 @@ import Register from "./pages/Register.jsx";
 import Home from "./pages/Home.jsx";
 import Products from "./pages/Products.jsx";
 import ProductDetails from "./pages/ProductDetails.jsx";
+import Wishlist from "./pages/Wishlist.jsx";
+import Cart from "./pages/Cart.jsx";
 
 export default function App() {
   const dispatch = useDispatch();
   const checked = useSelector((state) => state.auth.checked);
+  const user = useSelector((state) => state.auth.user);
   const location = useLocation();
 
   // routes render this lagging copy, so the old page stays put until the transition covers it
@@ -25,6 +31,16 @@ export default function App() {
   useEffect(() => {
     dispatch(fetchMe());
   }, [dispatch]);
+
+  // whoever logs in, pull their cart and saved items so the nav counts are right everywhere
+  let userId = null;
+  if (user) userId = user._id;
+
+  useEffect(() => {
+    if (!userId) return;
+    dispatch(loadCart());
+    dispatch(loadSavedIds());
+  }, [userId, dispatch]);
 
   if (!checked) {
     return <BootScreen />;
@@ -53,8 +69,12 @@ export default function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+          <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
         </Route>
       </Routes>
+
+      <Toaster />
     </>
   );
 }

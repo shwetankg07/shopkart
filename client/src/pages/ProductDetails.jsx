@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import TiltImage from "../components/TiltImage.jsx";
 import StockLine from "../components/StockLine.jsx";
+import AddToCartButton from "../components/AddToCartButton.jsx";
+import WishlistButton from "../components/WishlistButton.jsx";
 import { fetchProductById } from "../services/api.js";
 import { rupees } from "../lib/format.js";
 import "./ProductDetails.css";
@@ -11,6 +13,7 @@ export default function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [status, setStatus] = useState("loading");
   const [attempt, setAttempt] = useState(0);
+  const imageRef = useRef(null);
 
   useEffect(() => {
     let active = true;
@@ -78,7 +81,7 @@ export default function ProductDetails() {
 
   return (
     <div className="page detail">
-      <TiltImage src={product.image} alt={product.name} />
+      <TiltImage src={product.image} alt={product.name} imageRef={imageRef} />
 
       <div className="detail-info">
         <Link to={`/products?category=${product.category}`} className="detail-category">
@@ -90,9 +93,8 @@ export default function ProductDetails() {
         <p className="detail-description">{product.description}</p>
 
         <div className="detail-actions">
-          <button type="button" className="btn btn-primary" disabled={product.stock === 0}>
-            {product.stock === 0 ? "Sold out" : "Add to cart"}
-          </button>
+          <AddToCartButton product={product} imageRef={imageRef} className="btn btn-primary" />
+          <WishlistButton product={product} withLabel />
         </div>
 
         <Link to="/products" className="detail-back">

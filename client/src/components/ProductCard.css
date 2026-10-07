@@ -65,9 +65,85 @@
   font-size: var(--t-sm);
 }
 
-.pcard-details {
+.pcard-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  margin-top: var(--s-3);
+}
+
+.pcard-add {
+  min-height: 38px;
+  padding: 0 var(--s-4);
+}
+
+.pcard-remove {
   justify-self: start;
   margin-top: var(--s-2);
+  color: var(--muted);
+  font-size: var(--t-sm);
+}
+
+.pcard-remove:hover:not(:disabled) {
+  color: var(--danger);
+}
+
+.heart {
+  position: absolute;
+  top: var(--s-3);
+  right: var(--s-3);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  transition:
+    color var(--d-fast) var(--ease-out),
+    transform var(--d-fast) var(--ease-out);
+}
+
+.heart:hover {
+  color: var(--cobalt);
+}
+
+.heart:active {
+  transform: scale(0.9);
+}
+
+.heart.is-saved {
+  color: var(--cobalt);
+}
+
+.heart.is-saved svg,
+.save-button.is-saved svg {
+  animation: pop 320ms var(--ease-out);
+}
+
+.heart:disabled {
+  cursor: progress;
+}
+
+.heart:disabled svg {
+  animation: breathe 0.6s var(--ease-out) infinite alternate;
+}
+
+.save-button.is-saved {
+  color: var(--cobalt);
+  border-color: var(--cobalt);
+}
+
+@keyframes pop {
+  40% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pcard-details {
   font-size: var(--t-sm);
   font-weight: 600;
   color: var(--cobalt);
@@ -108,4 +184,8 @@
 .pcard-skeleton .skeleton:nth-child(3) {
   height: 14px;
   width: 40%;
+}
+
+.saved-grid {
+  margin-top: var(--s-6);
 }
