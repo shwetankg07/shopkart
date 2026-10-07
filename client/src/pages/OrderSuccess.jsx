@@ -19,7 +19,6 @@ export default function OrderSuccess() {
       .catch(() => setFailed(true));
   }, [id]);
 
-  // the slip feeds out of the printer in jerky steps, then the PAID stamp lands
   useEffect(() => {
     if (!order || prefersReducedMotion()) return;
 

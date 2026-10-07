@@ -7,7 +7,7 @@ const findCartItem = (customer, productId) => {
   return customer.cart.find((item) => item.product.toString() === productId);
 };
 
-// every cart endpoint answers with the fresh cart so the frontend never has to guess
+// every cart endpoint answers with the whole updated cart
 const sendCart = async (res, customerId, message) => {
   const customer = await Customer.findById(customerId).populate({
     path: "cart.product",

@@ -1,7 +1,6 @@
 import { gsap } from "gsap";
 import { prefersReducedMotion } from "./motion.js";
 
-// copy the product photo, shrink it into the cart pill in the nav, then give the pill a bump
 export const flyToCart = (image) => {
   const target = document.querySelector("[data-cart-target]");
   if (!image || !target || prefersReducedMotion()) return;

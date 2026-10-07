@@ -1,6 +1,6 @@
 let loading = null;
 
-// load razorpay's checkout script once, and say so if it can't be reached instead of assuming window.Razorpay exists
+// resolves false when the script can't load, so checkout can show an error
 export const loadRazorpay = () => {
   if (window.Razorpay) return Promise.resolve(true);
   if (loading) return loading;

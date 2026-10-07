@@ -26,7 +26,6 @@
   background-repeat: repeat-x;
 }
 
-/* torn paper teeth, each one a triangle with its point away from the slip */
 .receipt-paper::before {
   top: -9px;
   background-image: conic-gradient(from 135deg at 50% 0, var(--thermal) 90deg, transparent 0);

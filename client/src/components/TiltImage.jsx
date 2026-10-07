@@ -3,7 +3,6 @@ import { gsap } from "gsap";
 import { hasFinePointer, prefersReducedMotion } from "../lib/motion.js";
 import { showFallbackImage } from "../lib/catalog.js";
 
-// the photo leans a few degrees toward the pointer, like turning a box over in the shop
 export default function TiltImage({ src, alt, imageRef }) {
   const frameRef = useRef(null);
 

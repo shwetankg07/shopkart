@@ -1,7 +1,6 @@
 import TickingNumber from "./TickingNumber.jsx";
 import "./Receipt.css";
 
-// the till slip used by the cart, checkout and the order confirmation
 export default function Receipt({ lines, rows, total, meta, stamp, receiptRef }) {
   return (
     <div className="receipt" ref={receiptRef}>

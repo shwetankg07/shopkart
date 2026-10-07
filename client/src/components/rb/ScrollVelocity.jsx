@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
+import { prefersReducedMotion } from "../../lib/motion.js";
 import { motion, useScroll, useSpring, useTransform, useMotionValue, useVelocity, useAnimationFrame } from "motion/react";
 
 // React Bits "Scroll Velocity": a strip that drifts on its own and speeds up with scrolling
@@ -32,6 +33,7 @@ function Row({ children, baseVelocity }) {
   const copyRef = useRef(null);
   const copyWidth = useWidth(copyRef);
   const direction = useRef(1);
+  const still = useRef(prefersReducedMotion());
 
   const x = useTransform(baseX, (value) => {
     if (copyWidth === 0) return "0px";
@@ -39,6 +41,7 @@ function Row({ children, baseVelocity }) {
   });
 
   useAnimationFrame((time, delta) => {
+    if (still.current) return;
     let moveBy = direction.current * baseVelocity * (delta / 1000);
 
     if (velocityFactor.get() < 0) direction.current = -1;

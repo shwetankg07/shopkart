@@ -10,6 +10,7 @@ import BootScreen from "./components/BootScreen.jsx";
 import Toaster from "./components/Toaster.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
+import AdminRoute from "./components/AdminRoute.jsx";
 import Landing from "./pages/Landing.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
@@ -22,6 +23,8 @@ import Checkout from "./pages/Checkout.jsx";
 import OrderSuccess from "./pages/OrderSuccess.jsx";
 import Orders from "./pages/Orders.jsx";
 import OrderDetails from "./pages/OrderDetails.jsx";
+import Admin from "./pages/Admin.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -36,7 +39,6 @@ export default function App() {
     dispatch(fetchMe());
   }, [dispatch]);
 
-  // whoever logs in, pull their cart and saved items so the nav counts are right everywhere
   let userId = null;
   if (user) userId = user._id;
 
@@ -79,6 +81,8 @@ export default function App() {
           <Route path="/order-success/:id" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
           <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
           <Route path="/orders/:id" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
+          <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
 

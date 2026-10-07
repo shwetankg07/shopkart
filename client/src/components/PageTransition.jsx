@@ -11,7 +11,7 @@ const resetScroll = () => {
   }
 };
 
-// a cobalt sheet rises over the page, the route swaps while it's covered, then it carries on up
+// the route swaps while the sheet covers the page
 export default function PageTransition({ location, displayLocation, onSwap }) {
   const root = useRef(null);
   const timeline = useRef(null);
