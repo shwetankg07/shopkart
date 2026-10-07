@@ -1,23 +1,65 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutCustomer } from "../services/api.js";
+import { clearUser } from "../store/authSlice.js";
+import { firstName } from "../lib/format.js";
+import "./Navbar.css";
 
 export default function Navbar() {
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const handleLogout = async () => {
-    await logoutCustomer();
+    try {
+      await logoutCustomer();
+    } catch {
+      // the cookie might already be gone, log out locally either way
+    }
+    dispatch(clearUser());
     navigate("/login");
   };
 
   return (
-    <nav className="navbar">
-      <strong>ShopKart</strong>
+    <header className={scrolled ? "nav nav-scrolled" : "nav"}>
+      <Link to="/" className="nav-mark">
+        shopkart
+      </Link>
 
-      <div className="nav-links">
-        <Link to="/home">Home</Link>
-        <Link to="/products">Products</Link>
-        <button onClick={handleLogout}>Logout</button>
+      <nav className="nav-links" aria-label="Main">
+        <NavLink to="/products">Shop</NavLink>
+        <NavLink to="/wishlist">Saved</NavLink>
+        <NavLink to="/orders">Orders</NavLink>
+        {user && user.role === "admin" && <NavLink to="/admin">Admin</NavLink>}
+      </nav>
+
+      <div className="nav-end">
+        {user ? (
+          <>
+            <NavLink to="/home" className="nav-account">
+              {firstName(user.fullName)}
+            </NavLink>
+            <button type="button" className="nav-logout" onClick={handleLogout}>
+              Log out
+            </button>
+          </>
+        ) : (
+          <NavLink to="/login">Log in</NavLink>
+        )}
+
+        <NavLink to="/cart" className="nav-cart" data-cart-target>
+          Cart
+        </NavLink>
       </div>
-    </nav>
+    </header>
   );
 }

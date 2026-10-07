@@ -1,0 +1,56 @@
+:root {
+  --floor: #f4f5f7;
+  --stage: #ffffff;
+  --ink: #1a1e3a;
+  --ink-2: #3d4260;
+  --muted: #626779;
+  --cobalt: #2b4cff;
+  --cobalt-deep: #1d36c9;
+  --cobalt-tint: #e8ecff;
+  --thermal: #fffcf4;
+  --line: rgba(26, 30, 58, 0.12);
+  --line-strong: rgba(26, 30, 58, 0.28);
+  --danger: #b4233f;
+  --danger-tint: #fdecef;
+  --success: #17724a;
+  --success-tint: #e6f5ed;
+
+  --f-sans: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "Martian Mono", "SFMono-Regular", Menlo, monospace;
+
+  --t-xs: 0.75rem;
+  --t-sm: 0.875rem;
+  --t-base: 1rem;
+  --t-md: 1.2rem;
+  --t-lg: 1.44rem;
+  --t-xl: 1.728rem;
+  --t-2xl: 2.488rem;
+  --t-3xl: 3.583rem;
+  --t-display: clamp(3rem, 7.4vw, 6rem);
+
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+  --s-9: clamp(4rem, 9vw, 8rem);
+
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --page: 1360px;
+
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-pill: 999px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --d-fast: 160ms;
+  --d-mid: 240ms;
+
+  --z-nav: 40;
+  --z-toast: 70;
+  --z-fly: 80;
+  --z-transition: 90;
+}

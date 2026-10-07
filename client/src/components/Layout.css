@@ -1,0 +1,27 @@
+.shell {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell-main {
+  flex: 1;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-3);
+  padding: var(--s-6) var(--gutter);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--t-sm);
+}
+
+.footer-mark {
+  color: var(--ink);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}

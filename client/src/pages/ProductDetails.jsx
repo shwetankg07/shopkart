@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import Navbar from "../components/Navbar.jsx";
 import { fetchProductById } from "../services/api.js";
 
 export default function ProductDetails() {
@@ -40,7 +39,6 @@ export default function ProductDetails() {
 
   return (
     <>
-      <Navbar />
 
       <div className="page">
         <Link className="back-link" to="/products">

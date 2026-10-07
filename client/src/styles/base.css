@@ -1,0 +1,302 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--floor);
+}
+
+body {
+  background: var(--floor);
+  color: var(--ink);
+  font-family: var(--f-sans);
+  font-size: var(--t-base);
+  font-optical-sizing: auto;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: var(--cobalt);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--cobalt);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.page {
+  width: 100%;
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: var(--s-7) var(--gutter) var(--s-9);
+}
+
+.page-title {
+  font-size: var(--t-2xl);
+  margin-bottom: var(--s-2);
+}
+
+.page-lede {
+  color: var(--muted);
+  max-width: 60ch;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 44px;
+  padding: 0 var(--s-5);
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  font-size: var(--t-sm);
+  white-space: nowrap;
+  transition:
+    background-color var(--d-fast) var(--ease-out),
+    color var(--d-fast) var(--ease-out),
+    border-color var(--d-fast) var(--ease-out),
+    transform var(--d-fast) var(--ease-out);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+}
+
+.btn-primary {
+  background: var(--cobalt);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--cobalt-deep);
+}
+
+.btn-quiet {
+  border: 1px solid var(--line-strong);
+  background: transparent;
+}
+
+.btn-quiet:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+
+.btn-danger {
+  border: 1px solid var(--line-strong);
+  color: var(--danger);
+}
+
+.btn-danger:hover:not(:disabled) {
+  border-color: var(--danger);
+  background: var(--danger-tint);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.field {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.field-label {
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.field-input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 var(--s-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--stage);
+  transition: border-color var(--d-fast) var(--ease-out);
+}
+
+textarea.field-input {
+  padding: var(--s-3) var(--s-4);
+  min-height: 110px;
+  resize: vertical;
+}
+
+.field-input::placeholder {
+  color: var(--muted);
+}
+
+.field-input:hover {
+  border-color: var(--ink-2);
+}
+
+.field-input:focus-visible {
+  outline-offset: 0;
+  border-color: var(--cobalt);
+}
+
+.field-input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.field-hint {
+  font-size: var(--t-xs);
+  color: var(--muted);
+}
+
+.field-error {
+  font-size: var(--t-xs);
+  color: var(--danger);
+}
+
+.notice {
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-sm);
+  font-size: var(--t-sm);
+}
+
+.notice-error {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.notice-success {
+  background: var(--success-tint);
+  color: var(--success);
+}
+
+.state {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-3);
+  padding: var(--s-8) 0;
+  max-width: 44ch;
+}
+
+.state-title {
+  font-size: var(--t-xl);
+}
+
+.state p {
+  color: var(--muted);
+}
+
+.skeleton {
+  border-radius: var(--r-md);
+  background: linear-gradient(90deg, #e9ebef 0%, #f1f2f5 50%, #e9ebef 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.boot {
+  min-height: 100svh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--s-4);
+  padding: var(--gutter);
+  text-align: center;
+}
+
+.boot-mark {
+  font-size: var(--t-2xl);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  animation: breathe 1.6s var(--ease-out) infinite alternate;
+}
+
+.boot-note {
+  max-width: 38ch;
+  color: var(--muted);
+}
+
+@keyframes breathe {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

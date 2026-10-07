@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import ProductCard from "../components/ProductCard.jsx";
 import { fetchProducts } from "../services/api.js";
@@ -39,7 +38,6 @@ export default function Products() {
 
   return (
     <>
-      <Navbar />
 
       <div className="page">
         <h2>Products</h2>

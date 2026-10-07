@@ -1,0 +1,61 @@
+.account-title {
+  font-size: var(--t-display);
+  margin-bottom: var(--s-8);
+  letter-spacing: -0.03em;
+}
+
+.account-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--s-8);
+  align-items: start;
+}
+
+.account-heading {
+  font-size: var(--t-md);
+  margin-bottom: var(--s-4);
+}
+
+.account-details {
+  border-top: 1px solid var(--line);
+}
+
+.account-details div {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: var(--s-4);
+  padding: var(--s-4) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.account-details dt {
+  color: var(--muted);
+}
+
+.account-details dd {
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.account-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+}
+
+.account-form {
+  display: grid;
+  gap: var(--s-4);
+  max-width: 360px;
+}
+
+.account-form .btn {
+  justify-self: start;
+}
+
+@media (max-width: 860px) {
+  .account-grid {
+    grid-template-columns: 1fr;
+  }
+}
