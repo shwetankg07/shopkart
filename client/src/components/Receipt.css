@@ -47,6 +47,7 @@
 .receipt-meta {
   text-align: center;
   color: #5d6072;
+  white-space: pre-line;
 }
 
 .receipt-rule {

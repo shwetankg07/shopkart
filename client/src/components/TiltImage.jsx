@@ -33,7 +33,7 @@ export default function TiltImage({ src, alt, imageRef }) {
       frame.removeEventListener("pointermove", onMove);
       frame.removeEventListener("pointerleave", onLeave);
     };
-  }, []);
+  }, [imageRef]);
 
   return (
     <div className="tilt" ref={frameRef}>

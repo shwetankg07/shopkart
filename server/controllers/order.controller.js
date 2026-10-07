@@ -86,11 +86,21 @@ export const createPaymentOrder = async (req, res) => {
     });
 
     // razorpay wants paise, not rupees
-    const razorpayOrder = await razorpay.orders.create({
-      amount: Math.round(totalAmount * 100),
-      currency: "INR",
-      receipt: order._id.toString(),
-    });
+    let razorpayOrder;
+    try {
+      razorpayOrder = await razorpay.orders.create({
+        amount: Math.round(totalAmount * 100),
+        currency: "INR",
+        receipt: order._id.toString(),
+      });
+    } catch (error) {
+      console.error("Razorpay order failed:", error);
+      order.paymentStatus = "FAILED";
+      await order.save();
+      return res.status(502).json({
+        message: "Couldn't reach the payment service. Your cart hasn't changed, try again in a moment.",
+      });
+    }
 
     order.razorpayOrderId = razorpayOrder.id;
     await order.save();

@@ -281,6 +281,15 @@ try {
   res = await post("/orders/create-payment-order", { shippingAddress: { ...address, city: "   " } }, session);
   assert.equal(res.status, 400, "whitespace-only fields should be rejected");
 
+  // the dummy key gets turned away by razorpay (or there's no network), either way the cart must survive
+  res = await post("/orders/create-payment-order", { shippingAddress: address }, session);
+  assert.equal(res.status, 502, "a payment provider failure should be a 502");
+  res = await get("/cart", session);
+  body = await res.json();
+  assert.equal(body.cart.length, 1, "the cart must survive a payment provider failure");
+  const failedOrder = await Order.findOne({ user: customerId, paymentStatus: "FAILED" });
+  assert.ok(failedOrder, "the half-made order should be marked FAILED");
+
   await Product.updateOne({ _id: keyboardId }, { stock: 0 });
   res = await post("/orders/create-payment-order", { shippingAddress: address }, session);
   body = await res.json();
