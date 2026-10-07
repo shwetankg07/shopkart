@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import Order from "./models/order.model.js";
 import Product from "./models/product.model.js";
+import Customer from "./models/customer.model.js";
 
 const BASE = "http://localhost:8099";
 const mongo = await MongoMemoryServer.create();
@@ -15,6 +16,10 @@ const server = spawn("node", ["index.js"], {
     PORT: "8099",
     RAZORPAY_KEY_ID: "rzp_test_dummy",
     RAZORPAY_KEY_SECRET: "test-razorpay-secret",
+    CLIENT_URL: "http://localhost:5173",
+    CLOUDINARY_CLOUD_NAME: "test",
+    CLOUDINARY_API_KEY: "test",
+    CLOUDINARY_API_SECRET: "test",
   },
   stdio: ["ignore", "pipe", "inherit"],
 });
@@ -22,6 +27,7 @@ const server = spawn("node", ["index.js"], {
 await new Promise((resolve) =>
   server.stdout.on("data", (d) => String(d).includes("Server running") && resolve())
 );
+await mongoose.connect(mongo.getUri());
 
 const post = (path, body, cookie) =>
   fetch(BASE + path, {
@@ -107,25 +113,36 @@ try {
   assert.deepEqual(body.products, [], "empty catalogue should return an empty array");
 
   res = await post("/products", keyboard);
+  assert.equal(res.status, 401, "creating a product needs a login");
+
+  res = await post("/customers/login", { email: customer.email, password: customer.password });
+  const admin = res.headers.getSetCookie()[0].split(";")[0];
+
+  res = await post("/products", keyboard, admin);
+  assert.equal(res.status, 403, "a normal customer cannot create products");
+
+  await Customer.updateOne({ email: customer.email }, { role: "admin" });
+
+  res = await post("/products", keyboard, admin);
   body = await res.json();
   assert.equal(res.status, 201, "product creation should succeed");
   const keyboardId = body.product._id;
 
-  res = await post("/products", novel);
+  res = await post("/products", novel, admin);
   body = await res.json();
   assert.equal(res.status, 201, "second product creation should succeed");
   const novelId = body.product._id;
 
-  res = await post("/products", { ...keyboard, name: undefined });
+  res = await post("/products", { ...keyboard, name: undefined }, admin);
   assert.equal(res.status, 400, "missing name should be rejected");
 
-  res = await post("/products", { ...keyboard, price: 0 });
+  res = await post("/products", { ...keyboard, price: 0 }, admin);
   assert.equal(res.status, 400, "price of 0 should be rejected");
 
-  res = await post("/products", { ...keyboard, price: -5 });
+  res = await post("/products", { ...keyboard, price: -5 }, admin);
   assert.equal(res.status, 400, "negative price should be rejected");
 
-  res = await post("/products", { ...keyboard, stock: -1 });
+  res = await post("/products", { ...keyboard, stock: -1 }, admin);
   assert.equal(res.status, 400, "negative stock should be rejected");
 
   res = await get("/products");
@@ -264,7 +281,6 @@ try {
   res = await post("/orders/create-payment-order", { shippingAddress: { ...address, city: "   " } }, session);
   assert.equal(res.status, 400, "whitespace-only fields should be rejected");
 
-  await mongoose.connect(mongo.getUri());
   await Product.updateOne({ _id: keyboardId }, { stock: 0 });
   res = await post("/orders/create-payment-order", { shippingAddress: address }, session);
   body = await res.json();
@@ -327,6 +343,42 @@ try {
 
   res = await get(`/orders/${pending._id}`, otherSession);
   assert.equal(res.status, 404, "another customer's order must stay hidden");
+
+  res = await send("PATCH", `/orders/${pending._id}/status`, { status: "SHIPPED" }, otherSession);
+  assert.equal(res.status, 403, "only admins can move an order");
+
+  res = await send("PATCH", `/orders/${pending._id}/status`, { status: "LOST" }, session);
+  assert.equal(res.status, 400, "unknown statuses should be rejected");
+
+  res = await send("PATCH", `/orders/${pending._id}/status`, { status: "SHIPPED" }, session);
+  body = await res.json();
+  assert.equal(body.order.status, "SHIPPED", "admin can move an order forward");
+
+  res = await get("/orders/admin/all", session);
+  body = await res.json();
+  assert.equal(body.orders.length, 1, "admin sees every placed order");
+
+  res = await send("PATCH", "/customers/change-password", { oldPassword: "nope", newPassword: "fresh123" }, session);
+  assert.equal(res.status, 401, "a wrong old password should be rejected");
+
+  res = await send("PATCH", "/customers/change-password", { oldPassword: customer.password, newPassword: "fresh123" }, session);
+  assert.equal(res.status, 200, "change password should succeed");
+
+  res = await post("/customers/login", { email: customer.email, password: "fresh123" });
+  assert.equal(res.status, 200, "the new password should work");
+
+  res = await get("/health");
+  assert.equal(res.status, 200, "health check should answer");
+
+  res = await get("/nowhere");
+  assert.equal(res.status, 404, "unknown routes should be a json 404");
+
+  res = await fetch(BASE + "/customers/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: "{not json",
+  });
+  assert.equal(res.status, 400, "broken json should be a 400, not a crash");
 
   console.log("all checks passed");
 } finally {

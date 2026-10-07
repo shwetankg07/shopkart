@@ -9,6 +9,7 @@ const publicCustomer = (customer) => {
     fullName: customer.fullName,
     email: customer.email,
     phone: customer.phone,
+    role: customer.role,
   };
 };
 
@@ -82,4 +83,33 @@ export const getMe = (req, res) => {
 export const logoutCustomer = (req, res) => {
   res.clearCookie("token", cookieOptions);
   res.json({ success: true, message: "Logged out successfully" });
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ message: "Old and new password are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
+
+    // protect strips the password, so load it again here
+    const customer = await Customer.findById(req.user._id);
+    const oldPasswordOk = await bcrypt.compare(oldPassword, customer.password);
+
+    if (!oldPasswordOk) {
+      return res.status(401).json({ message: "Old password is incorrect" });
+    }
+
+    customer.password = await bcrypt.hash(newPassword, 10);
+    await customer.save();
+
+    res.json({ success: true, message: "Password changed successfully" });
+  } catch (error) {
+    serverError(res, error);
+  }
 };

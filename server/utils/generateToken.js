@@ -4,10 +4,13 @@ export const generateToken = (customerId) => {
   return jwt.sign({ id: customerId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
-// login and logout both use this, the options have to match or clearCookie does nothing
+const isProduction = process.env.NODE_ENV === "production";
+
+// vercel and render are different sites, so in production the cookie has to be SameSite=None,
+// and browsers only accept that together with Secure
 export const cookieOptions = {
   httpOnly: true,
-  sameSite: "lax",
-  secure: false,
+  sameSite: isProduction ? "none" : "lax",
+  secure: isProduction,
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };

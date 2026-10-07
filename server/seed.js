@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 import Product from "./models/product.model.js";
+import Customer from "./models/customer.model.js";
 
 dotenv.config();
 
@@ -79,11 +81,40 @@ const products = [
   },
 ];
 
+// admin details come from .env so no password ever lives in the repo
+const seedAdmin = async () => {
+  const { ADMIN_EMAIL, ADMIN_PASSWORD } = process.env;
+
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    console.log("ADMIN_EMAIL / ADMIN_PASSWORD not set, skipping admin");
+    return;
+  }
+
+  const existing = await Customer.findOne({ email: ADMIN_EMAIL.toLowerCase() });
+
+  if (existing) {
+    existing.role = "admin";
+    await existing.save();
+    console.log(`${ADMIN_EMAIL} is now an admin`);
+    return;
+  }
+
+  await Customer.create({
+    fullName: "ShopKart Admin",
+    email: ADMIN_EMAIL,
+    password: await bcrypt.hash(ADMIN_PASSWORD, 10),
+    phone: "0000000000",
+    role: "admin",
+  });
+  console.log(`Created admin ${ADMIN_EMAIL}`);
+};
+
 try {
   await mongoose.connect(process.env.MONGO_URI);
   await Product.deleteMany({});
   const inserted = await Product.insertMany(products);
   console.log(`Seeded ${inserted.length} products`);
+  await seedAdmin();
 } catch (error) {
   console.log("Seeding failed:", error.message);
 } finally {

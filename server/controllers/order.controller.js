@@ -201,3 +201,49 @@ export const getOrderById = async (req, res) => {
     serverError(res, error);
   }
 };
+
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ status: { $ne: "PENDING_PAYMENT" } })
+      .sort({ createdAt: -1 })
+      .populate("user", "fullName email");
+
+    res.json({ success: true, orders });
+  } catch (error) {
+    serverError(res, error);
+  }
+};
+
+const NEXT_STATUSES = ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED"];
+
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid order id" });
+    }
+
+    if (!NEXT_STATUSES.includes(status)) {
+      return res.status(400).json({ message: `Status must be one of ${NEXT_STATUSES.join(", ")}` });
+    }
+
+    const order = await Order.findById(id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (order.paymentStatus !== "PAID") {
+      return res.status(400).json({ message: "Only paid orders can move forward" });
+    }
+
+    order.status = status;
+    await order.save();
+
+    res.json({ success: true, order });
+  } catch (error) {
+    serverError(res, error);
+  }
+};
