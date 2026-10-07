@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMe } from "./store/authSlice.js";
 import Layout from "./components/Layout.jsx";
@@ -7,6 +7,7 @@ import PageTransition from "./components/PageTransition.jsx";
 import BootScreen from "./components/BootScreen.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
+import Landing from "./pages/Landing.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Home from "./pages/Home.jsx";
@@ -48,7 +49,7 @@ export default function App() {
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
 
         <Route element={<Layout />}>
-          <Route path="/" element={<Navigate to="/products" replace />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />

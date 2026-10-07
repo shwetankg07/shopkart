@@ -14,7 +14,7 @@
   justify-content: space-between;
   align-items: baseline;
   gap: var(--s-3);
-  padding: var(--s-6) var(--gutter);
+  padding: var(--s-6) var(--edge);
   border-top: 1px solid var(--line);
   color: var(--muted);
   font-size: var(--t-sm);

@@ -7,7 +7,7 @@
   align-items: center;
   gap: var(--s-5);
   height: 68px;
-  padding: 0 var(--gutter);
+  padding: 0 var(--edge);
   background: var(--floor);
   border-bottom: 1px solid transparent;
   transition: border-color var(--d-mid) var(--ease-out);

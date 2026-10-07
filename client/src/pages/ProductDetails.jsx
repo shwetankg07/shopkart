@@ -1,74 +1,104 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import TiltImage from "../components/TiltImage.jsx";
+import StockLine from "../components/StockLine.jsx";
 import { fetchProductById } from "../services/api.js";
+import { rupees } from "../lib/format.js";
+import "./ProductDetails.css";
 
 export default function ProductDetails() {
   const { id } = useParams();
-
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [status, setStatus] = useState("loading");
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let active = true;
-
-    setLoading(true);
-    setError("");
+    setStatus("loading");
 
     fetchProductById(id)
       .then((res) => {
-        if (active) setProduct(res.data.product);
+        if (!active) return;
+        setProduct(res.data.product);
+        setStatus("ready");
       })
       .catch((err) => {
         if (!active) return;
-
-        setError(
-          err.response?.status === 404
-            ? "Product not found."
-            : "Something went wrong while loading this product."
-        );
-      })
-      .finally(() => {
-        if (active) setLoading(false);
+        if (err.response && (err.response.status === 404 || err.response.status === 400)) {
+          setStatus("missing");
+        } else {
+          setStatus("error");
+        }
       });
 
     return () => {
       active = false;
     };
-  }, [id]);
+  }, [id, attempt]);
+
+  if (status === "loading") {
+    return (
+      <div className="page detail" aria-label="Loading product">
+        <div className="skeleton detail-skeleton-image" />
+        <div className="detail-info">
+          <div className="skeleton" style={{ height: 48, width: "80%" }} />
+          <div className="skeleton" style={{ height: 28, width: "30%" }} />
+          <div className="skeleton" style={{ height: 90 }} />
+        </div>
+      </div>
+    );
+  }
+
+  if (status === "missing") {
+    return (
+      <div className="page">
+        <div className="state">
+          <h1 className="state-title">Product not found.</h1>
+          <p>It may have been removed, or the link is wrong.</p>
+          <Link to="/products" className="btn btn-primary">
+            Back to the shop
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <div className="page">
+        <div className="state">
+          <h1 className="state-title">Something went wrong while loading this product.</h1>
+          <button type="button" className="btn btn-primary" onClick={() => setAttempt(attempt + 1)}>
+            Try again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
+    <div className="page detail">
+      <TiltImage src={product.image} alt={product.name} />
 
-      <div className="page">
-        <Link className="back-link" to="/products">
-          Back to products
+      <div className="detail-info">
+        <Link to={`/products?category=${product.category}`} className="detail-category">
+          {product.category}
         </Link>
+        <h1 className="detail-name">{product.name}</h1>
+        <p className="detail-price">{rupees(product.price)}</p>
+        <StockLine stock={product.stock} />
+        <p className="detail-description">{product.description}</p>
 
-        {loading && <p className="state">Loading product...</p>}
+        <div className="detail-actions">
+          <button type="button" className="btn btn-primary" disabled={product.stock === 0}>
+            {product.stock === 0 ? "Sold out" : "Add to cart"}
+          </button>
+        </div>
 
-        {!loading && error && <p className="state error">{error}</p>}
-
-        {!loading && !error && product && (
-          <div className="details">
-            <img src={product.image} alt={product.name} />
-
-            <div className="details-body">
-              <h2>{product.name}</h2>
-              <p className="muted">{product.category}</p>
-              <p className="price">₹{product.price.toLocaleString("en-IN")}</p>
-
-              <p className={product.stock > 0 ? "in-stock" : "out-stock"}>
-                {product.stock > 0 ? `${product.stock} units left` : "Out of stock"}
-              </p>
-
-              <p>{product.description}</p>
-
-              <button disabled={product.stock === 0}>Add to Cart</button>
-            </div>
-          </div>
-        )}
+        <Link to="/products" className="detail-back">
+          Back to all products
+        </Link>
       </div>
-    </>
+    </div>
   );
 }

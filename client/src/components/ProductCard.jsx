@@ -1,35 +1,31 @@
 import { Link } from "react-router-dom";
-
-const FALLBACK_IMAGE =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='600' height='400' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' fill='%239ca3af' font-family='sans-serif' font-size='22' text-anchor='middle'%3ENo image%3C/text%3E%3C/svg%3E";
-
-const handleImageError = (e) => {
-  e.target.onerror = null;
-  e.target.src = FALLBACK_IMAGE;
-};
+import StockLine from "./StockLine.jsx";
+import { rupees } from "../lib/format.js";
+import { showFallbackImage } from "../lib/catalog.js";
+import "./ProductCard.css";
 
 export default function ProductCard({ product }) {
+  const link = `/products/${product._id}`;
+
   return (
-    <div className="product-card">
-      <img
-        src={product.image}
-        alt={product.name}
-        onError={handleImageError}
-      />
+    <article className="pcard">
+      <Link to={link} className="pcard-stage" tabIndex={-1} aria-hidden="true">
+        <img src={product.image} alt="" loading="lazy" onError={showFallbackImage} />
+      </Link>
 
-      <div className="product-body">
-        <h3>{product.name}</h3>
-        <p className="muted">{product.category}</p>
-        <p className="price">₹{product.price.toLocaleString("en-IN")}</p>
-
-        <p className={product.stock > 0 ? "in-stock" : "out-stock"}>
-          {product.stock > 0 ? `${product.stock} units left` : "Out of stock"}
-        </p>
-
-        <Link className="btn" to={`/products/${product._id}`}>
-          View Details
+      <div className="pcard-body">
+        <div className="pcard-top">
+          <h3 className="pcard-name">
+            <Link to={link}>{product.name}</Link>
+          </h3>
+          <span className="pcard-price">{rupees(product.price)}</span>
+        </div>
+        <p className="pcard-category">{product.category}</p>
+        <StockLine stock={product.stock} />
+        <Link to={link} className="pcard-details">
+          View details
         </Link>
       </div>
-    </div>
+    </article>
   );
 }

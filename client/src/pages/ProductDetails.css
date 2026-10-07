@@ -1,0 +1,98 @@
+.detail {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: var(--s-8);
+  align-items: start;
+}
+
+.tilt {
+  position: sticky;
+  top: 100px;
+  aspect-ratio: 1;
+  border-radius: var(--r-md);
+  background: var(--stage);
+  perspective: 900px;
+}
+
+.tilt img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--r-md);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.detail-skeleton-image {
+  aspect-ratio: 1;
+}
+
+.detail-info {
+  display: grid;
+  gap: var(--s-4);
+  padding-top: var(--s-4);
+}
+
+.detail-category {
+  justify-self: start;
+  color: var(--cobalt);
+  font-weight: 600;
+  font-size: var(--t-sm);
+}
+
+.detail-category:hover {
+  text-decoration: underline;
+}
+
+.detail-name {
+  font-size: var(--t-3xl);
+  letter-spacing: -0.03em;
+}
+
+.detail-price {
+  font-size: var(--t-xl);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.detail-description {
+  max-width: 52ch;
+  color: var(--ink-2);
+  font-size: var(--t-md);
+  line-height: 1.6;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-3);
+}
+
+.detail-actions .btn {
+  min-height: 52px;
+  padding: 0 var(--s-6);
+  font-size: var(--t-base);
+}
+
+.detail-back {
+  justify-self: start;
+  margin-top: var(--s-5);
+  color: var(--muted);
+  font-size: var(--t-sm);
+}
+
+.detail-back:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .detail {
+    grid-template-columns: 1fr;
+    gap: var(--s-6);
+  }
+
+  .tilt {
+    position: static;
+  }
+}

@@ -85,10 +85,7 @@ p {
 }
 
 .page {
-  width: 100%;
-  max-width: var(--page);
-  margin: 0 auto;
-  padding: var(--s-7) var(--gutter) var(--s-9);
+  padding: var(--s-7) var(--edge) var(--s-9);
 }
 
 .page-title {
