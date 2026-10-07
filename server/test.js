@@ -1,13 +1,21 @@
 // boots the real server against an in-memory mongo and walks the whole flow. run with npm test
 import assert from "node:assert";
 import { spawn } from "node:child_process";
+import crypto from "node:crypto";
+import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
+import Order from "./models/order.model.js";
+import Product from "./models/product.model.js";
 
 const BASE = "http://localhost:8099";
 const mongo = await MongoMemoryServer.create();
 
 const server = spawn("node", ["index.js"], {
-  env: { ...process.env, MONGO_URI: mongo.getUri(), JWT_SECRET: "test-secret", PORT: "8099" },
+  env: { ...process.env, MONGO_URI: mongo.getUri(), JWT_SECRET: "test-secret",
+    PORT: "8099",
+    RAZORPAY_KEY_ID: "rzp_test_dummy",
+    RAZORPAY_KEY_SECRET: "test-razorpay-secret",
+  },
   stdio: ["ignore", "pipe", "inherit"],
 });
 
@@ -62,6 +70,7 @@ try {
   let body = await res.json();
   assert.equal(res.status, 201, "register should succeed");
   assert.equal(body.customer.password, undefined, "password must never be returned");
+  const customerId = body.customer._id;
 
   res = await post("/customers/register", customer);
   assert.equal(res.status, 409, "duplicate email should be rejected");
@@ -235,8 +244,93 @@ try {
   body = await res.json();
   assert.equal(body.cart.length, 0, "remove should empty the cart");
 
+  const address = {
+    fullName: "Aarav Sharma",
+    phone: "9876543210",
+    addressLine1: "22 MG Road",
+    city: "Bengaluru",
+    state: "Karnataka",
+    pincode: "560001",
+  };
+
+  res = await post("/orders/create-payment-order", { shippingAddress: address }, session);
+  assert.equal(res.status, 400, "checkout with an empty cart should be rejected");
+
+  await post(`/cart/${keyboardId}`, {}, session);
+
+  res = await post("/orders/create-payment-order", { shippingAddress: { ...address, pincode: "12" } }, session);
+  assert.equal(res.status, 400, "a bad pincode should be rejected");
+
+  res = await post("/orders/create-payment-order", { shippingAddress: { ...address, city: "   " } }, session);
+  assert.equal(res.status, 400, "whitespace-only fields should be rejected");
+
+  await mongoose.connect(mongo.getUri());
+  await Product.updateOne({ _id: keyboardId }, { stock: 0 });
+  res = await post("/orders/create-payment-order", { shippingAddress: address }, session);
+  body = await res.json();
+  assert.equal(res.status, 400, "stock is checked again at checkout");
+  assert.match(body.message, /Insufficient stock/);
+  await Product.updateOne({ _id: keyboardId }, { stock: 10 });
+
+  // razorpay can't be reached from a test, so plant the pending order it would have created
+  const pending = await Order.create({
+    user: customerId,
+    items: [{ product: keyboardId, name: keyboard.name, price: keyboard.price, quantity: 1 }],
+    shippingAddress: address,
+    totalAmount: keyboard.price,
+    razorpayOrderId: "order_test123",
+  });
+  const paymentId = "pay_test456";
+  const signature = crypto
+    .createHmac("sha256", "test-razorpay-secret")
+    .update("order_test123|" + paymentId)
+    .digest("hex");
+
+  res = await post(
+    "/orders/verify-payment",
+    { shopKartOrderId: pending._id, razorpay_payment_id: paymentId, razorpay_signature: "fake" },
+    session
+  );
+  assert.equal(res.status, 400, "a fake signature must be rejected");
+
+  res = await get("/cart", session);
+  body = await res.json();
+  assert.equal(body.cart.length, 1, "a failed verification must keep the cart");
+
+  res = await post(
+    "/orders/verify-payment",
+    { shopKartOrderId: pending._id, razorpay_payment_id: paymentId, razorpay_signature: signature },
+    session
+  );
+  body = await res.json();
+  assert.equal(res.status, 200, "a real signature should verify");
+  assert.equal(body.order.paymentStatus, "PAID");
+  assert.equal(body.order.status, "PLACED");
+
+  res = await get("/cart", session);
+  body = await res.json();
+  assert.equal(body.cart.length, 0, "a verified payment should clear the cart");
+
+  const keyboardAfter = await Product.findById(keyboardId);
+  assert.equal(keyboardAfter.stock, 9, "a verified payment should take the stock");
+
+  res = await get("/orders", session);
+  body = await res.json();
+  assert.equal(body.orders.length, 1, "the paid order should be listed");
+
+  res = await get(`/orders/${pending._id}`, session);
+  assert.equal(res.status, 200, "the owner can open their order");
+
+  await post("/customers/register", { ...customer, email: "other@gmail.com" });
+  res = await post("/customers/login", { email: "other@gmail.com", password: customer.password });
+  const otherSession = res.headers.getSetCookie()[0].split(";")[0];
+
+  res = await get(`/orders/${pending._id}`, otherSession);
+  assert.equal(res.status, 404, "another customer's order must stay hidden");
+
   console.log("all checks passed");
 } finally {
   server.kill();
+  await mongoose.disconnect();
   await mongo.stop();
 }
