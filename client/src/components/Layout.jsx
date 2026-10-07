@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
+import Cursor from "./Cursor.jsx";
 import useSmoothScroll from "../lib/useSmoothScroll.js";
 import "./Layout.css";
 
@@ -16,6 +17,7 @@ export default function Layout() {
         <span className="footer-mark">shopkart</span>
         <p>Payments run in Razorpay test mode. No real money moves.</p>
       </footer>
+      <Cursor />
     </div>
   );
 }

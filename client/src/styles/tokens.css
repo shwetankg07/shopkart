@@ -54,4 +54,7 @@
   --z-toast: 70;
   --z-fly: 80;
   --z-transition: 90;
+  --z-cursor: 95;
+
+  --nav-h: 68px;
 }

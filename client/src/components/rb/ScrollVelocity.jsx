@@ -11,13 +11,14 @@ const wrap = (min, max, value) => {
 function useWidth(ref) {
   const [width, setWidth] = useState(0);
 
+  // measure again whenever the strip itself changes size, e.g. when the product photos replace the first ones
   useLayoutEffect(() => {
-    const update = () => {
-      if (ref.current) setWidth(ref.current.offsetWidth);
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    const el = ref.current;
+    const observer = new ResizeObserver(() => {
+      setWidth(el.offsetWidth);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
   }, [ref]);
 
   return width;

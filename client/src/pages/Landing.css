@@ -1,62 +1,264 @@
 .hero {
   display: grid;
-  grid-template-columns: 1fr minmax(260px, 340px);
-  align-items: end;
+  align-content: end;
   gap: var(--s-7);
-  padding: var(--s-9) var(--edge) var(--s-8);
-}
-
-.hero-title {
-  font-size: clamp(4rem, 12vw, 6rem);
-  font-weight: 800;
-  line-height: 0.92;
-  letter-spacing: -0.04em;
-}
-
-.hero-mask {
-  display: inline-block;
+  min-height: calc(100svh - var(--nav-h));
+  padding: var(--s-7) var(--edge) var(--s-8);
   overflow: hidden;
-  padding-bottom: 0.08em;
-  margin-right: 0.22em;
+}
+
+.hero-mark {
+  font-size: clamp(5rem, 26.5vw, 30rem);
+  font-weight: 640;
+  line-height: 0.82;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  margin-left: -0.05em;
+}
+
+/* clip only along the bottom, so letters can rise into view without losing their overhangs */
+.vp-mask {
+  display: inline-block;
+  clip-path: inset(-20% -30% 0 -30%);
+  padding-bottom: 0.04em;
   vertical-align: bottom;
 }
 
-.hero-word {
+.vp-letter {
   display: inline-block;
 }
 
-.hero-side {
+.hero-foot {
   display: grid;
-  gap: var(--s-5);
-  justify-items: start;
-  padding-bottom: var(--s-2);
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: var(--s-6);
 }
 
-.hero-side p {
+.hero-line {
+  max-width: 30ch;
+  font-size: var(--t-lg);
+  line-height: 1.35;
   color: var(--ink-2);
+}
+
+.hero-cta {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+}
+
+.hero-button {
+  min-height: 58px;
+  padding: 0 var(--s-6);
+  font-size: var(--t-base);
+}
+
+.hero-count {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.print {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(300px, 340px);
+  align-items: center;
+  gap: var(--s-7);
+  min-height: 100svh;
+  padding: calc(var(--nav-h) + var(--s-5)) var(--edge) var(--s-6);
+  background: var(--ink);
+  color: #fff;
+}
+
+.print-copy {
+  display: grid;
+  gap: var(--s-4);
+  align-self: center;
+}
+
+.print-title {
+  font-size: clamp(2.6rem, 4.6vw, 4.5rem);
+  letter-spacing: -0.03em;
+}
+
+.print-lede {
+  max-width: 32ch;
+  color: rgba(255, 255, 255, 0.72);
   font-size: var(--t-md);
 }
 
-.strip {
-  display: flex;
-  gap: var(--s-4);
-  padding-right: var(--s-4);
+.print-finale {
+  margin-top: var(--s-4);
 }
 
-.strip-img {
-  width: 220px;
+.print-stage {
+  position: relative;
+  height: min(72svh, 700px);
   aspect-ratio: 4 / 5;
-  object-fit: cover;
+  justify-self: center;
   border-radius: var(--r-md);
+  overflow: hidden;
   background: var(--stage);
 }
 
-.landing-section {
-  padding-bottom: 0;
+.print-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.landing-section:last-child {
-  padding-bottom: var(--s-9);
+.print-captions {
+  position: absolute;
+  left: var(--s-4);
+  right: var(--s-4);
+  bottom: var(--s-4);
+  height: 46px;
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  background: var(--stage);
+}
+
+.print-caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 0 var(--s-5);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: var(--t-sm);
+  opacity: 0;
+}
+
+.print-caption:last-child {
+  opacity: 1;
+}
+
+.print-receipt {
+  align-self: center;
+}
+
+.aisles {
+  overflow: hidden;
+}
+
+.aisles-track {
+  display: flex;
+  align-items: stretch;
+  gap: var(--s-6);
+  width: max-content;
+  height: 100svh;
+  padding: calc(var(--nav-h) + var(--s-6)) var(--edge) var(--s-7);
+}
+
+.aisles-intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--s-3);
+  width: min(30vw, 400px);
+}
+
+.aisles-title {
+  font-size: clamp(3rem, 6vw, 6rem);
+  letter-spacing: -0.03em;
+}
+
+.aisles-lede {
+  color: var(--muted);
+}
+
+.aisle {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--s-5);
+  width: min(60vw, 880px);
+  padding: var(--s-5);
+  border-radius: var(--r-md);
+}
+
+.aisle-0 {
+  background: var(--ink);
+  color: #fff;
+}
+
+.aisle-1 {
+  background: var(--cobalt);
+  color: #fff;
+}
+
+.aisle-2 {
+  background: var(--thermal);
+}
+
+.aisle-3 {
+  background: var(--stage);
+}
+
+.aisle-frame {
+  min-height: 0;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+
+.aisle-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.aisle-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--s-4);
+}
+
+.aisle-name {
+  order: -1;
+  font-size: clamp(3rem, 7.5vw, 7rem);
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+}
+
+.aisle-count {
+  padding-bottom: 0.6em;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.ribbons {
+  padding: var(--s-9) 0 var(--s-8);
+  overflow: hidden;
+}
+
+.ribbon {
+  display: flex;
+  gap: 0.45em;
+  padding-right: 0.45em;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.ribbon-prices {
+  font-size: clamp(3.5rem, 10vw, 9rem);
+  color: transparent;
+  -webkit-text-stroke: 2px var(--ink);
+}
+
+.ribbon-names {
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  color: var(--cobalt);
+}
+
+.landing-new {
+  padding-top: var(--s-6);
 }
 
 .landing-heading {
@@ -80,22 +282,46 @@
   text-decoration: underline;
 }
 
-@media (max-width: 760px) {
-  .hero {
-    grid-template-columns: 1fr;
-    padding-top: var(--s-8);
-  }
-
-  .strip-img {
-    width: 150px;
-  }
-}
-
 .landing-grid {
   grid-template-columns: repeat(4, 1fr);
 }
 
-@media (max-width: 900px) {
+/* without the pinned scroll the sideways sections simply stack */
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+  .print {
+    grid-template-columns: 1fr;
+    padding-top: var(--s-8);
+    padding-bottom: var(--s-8);
+  }
+
+  .print-stage {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+  }
+
+  .aisles-track {
+    flex-direction: column;
+    width: auto;
+    height: auto;
+    padding-top: var(--s-8);
+  }
+
+  .aisles-intro {
+    width: auto;
+  }
+
+  .aisle {
+    width: 100%;
+    height: 72svh;
+  }
+}
+
+@media (max-width: 899px) {
+  .hero-foot {
+    grid-template-columns: 1fr;
+  }
+
   .landing-grid {
     grid-template-columns: repeat(2, 1fr);
   }

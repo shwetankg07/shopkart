@@ -13,7 +13,7 @@ export default function ProductCard({ product }) {
 
   return (
     <article className="pcard">
-      <Link to={link} className="pcard-stage" tabIndex={-1} aria-hidden="true">
+      <Link to={link} className="pcard-stage" tabIndex={-1} aria-hidden="true" data-cursor="View">
         <img ref={imageRef} src={product.image} alt="" loading="lazy" onError={showFallbackImage} />
       </Link>
       <WishlistButton product={product} />
