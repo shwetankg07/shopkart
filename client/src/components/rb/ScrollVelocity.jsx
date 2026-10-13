@@ -2,7 +2,6 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { prefersReducedMotion } from "../../lib/motion.js";
 import { motion, useScroll, useSpring, useTransform, useMotionValue, useVelocity, useAnimationFrame } from "motion/react";
 
-// React Bits "Scroll Velocity": a strip that drifts on its own and speeds up with scrolling
 const wrap = (min, max, value) => {
   const range = max - min;
   return ((((value - min) % range) + range) % range) + min;
@@ -11,7 +10,6 @@ const wrap = (min, max, value) => {
 function useWidth(ref) {
   const [width, setWidth] = useState(0);
 
-  // measure again whenever the strip itself changes size, e.g. when the product photos replace the first ones
   useLayoutEffect(() => {
     const el = ref.current;
     const observer = new ResizeObserver(() => {

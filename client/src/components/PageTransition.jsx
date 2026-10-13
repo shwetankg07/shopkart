@@ -11,7 +11,6 @@ const resetScroll = () => {
   }
 };
 
-// the route swaps while the sheet covers the page
 export default function PageTransition({ location, displayLocation, onSwap }) {
   const root = useRef(null);
   const timeline = useRef(null);

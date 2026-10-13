@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchWishlist, toggleWishlist } from "../services/api.js";
 import { clearUser } from "./authSlice.js";
 
-// only the saved ids live here, for the hearts and the nav count. the wishlist page loads its own data
 export const loadSavedIds = createAsyncThunk("wishlist/loadIds", async () => {
   const res = await fetchWishlist();
   return res.data.wishlist.map((product) => product._id);

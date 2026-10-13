@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080",
-  withCredentials: true, // the login cookie only travels cross-origin with this on
+  withCredentials: true,
 });
 
 export const errorMessage = (error, fallback) => {

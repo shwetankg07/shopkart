@@ -13,7 +13,6 @@ export default function Cart() {
   const subtotal = useSelector(selectSubtotal);
   const dispatch = useDispatch();
 
-  // prices and stock can change while the cart sits there, so refresh on every visit
   useEffect(() => {
     dispatch(loadCart());
   }, [dispatch]);

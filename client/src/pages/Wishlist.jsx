@@ -15,7 +15,6 @@ export default function Wishlist() {
   const [status, setStatus] = useState("loading");
   const [attempt, setAttempt] = useState(0);
 
-  // this page asks the server itself, the saved list is backend data, not app state
   useEffect(() => {
     let active = true;
     setStatus("loading");

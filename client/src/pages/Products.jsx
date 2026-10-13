@@ -43,7 +43,6 @@ export default function Products() {
     gsap.from(cards, { y: 18, opacity: 0, duration: 0.45, ease: "power3.out", stagger: 0.035 });
   }, [status, products]);
 
-  // filters live in the url, so a refresh or a shared link keeps them
   const updateFilter = useCallback(
     (key, value) => {
       setSearchParams(

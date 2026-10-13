@@ -6,8 +6,6 @@ export const generateToken = (customerId) => {
 
 const isProduction = process.env.NODE_ENV === "production";
 
-// vercel and render are different sites, so in production the cookie has to be SameSite=None,
-// and browsers only accept that together with Secure
 export const cookieOptions = {
   httpOnly: true,
   sameSite: isProduction ? "none" : "lax",

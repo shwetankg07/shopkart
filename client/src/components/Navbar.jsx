@@ -26,7 +26,6 @@ export default function Navbar() {
     try {
       await logoutCustomer();
     } catch {
-      // the cookie might already be gone, log out locally either way
     }
     dispatch(clearUser());
     navigate("/login");

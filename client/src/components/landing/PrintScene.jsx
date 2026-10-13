@@ -8,7 +8,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const amount = (value) => Math.round(value).toLocaleString("en-IN");
 
-// pinned while you scroll: each step wipes in a product photo, prints its line and adds it to the total
 export default function PrintScene({ products }) {
   const rootRef = useRef(null);
 
@@ -20,7 +19,6 @@ export default function PrintScene({ products }) {
   useEffect(() => {
     const root = rootRef.current;
 
-    // the total after each line, so the counter knows where every step starts and ends
     const totals = [];
     let running = 0;
     for (const product of products) {
@@ -91,7 +89,6 @@ export default function PrintScene({ products }) {
         .to(finale, { autoAlpha: 1, y: 0, duration: 0.4 }, ">")
         .to({}, { duration: 0.6 });
 
-      // leaving this media query puts everything back, the total text included
       return () => {
         totalEl.textContent = amount(running);
       };
@@ -101,7 +98,6 @@ export default function PrintScene({ products }) {
   }, [products]);
 
   return (
-    // gsap wraps a pinned element in a spacer div, this outer div is what react adds and removes, so it never loses track
     <div>
       <section className="print" ref={rootRef}>
         <div className="print-copy">

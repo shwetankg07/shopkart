@@ -25,7 +25,6 @@ export const addToWishlist = async (req, res) => {
       return res.status(409).json({ message: "Product already in wishlist" });
     }
 
-    // $addToSet so two quick clicks still can't store the same product twice
     await Customer.updateOne({ _id: req.user._id }, { $addToSet: { wishlist: productId } });
 
     res.status(201).json({ success: true, message: "Product added to wishlist" });
@@ -41,7 +40,6 @@ export const getWishlist = async (req, res) => {
       select: "name price category image stock",
     });
 
-    // a product deleted after it was saved comes back as null
     const wishlist = customer.wishlist.filter((product) => product !== null);
 
     res.json({ success: true, count: wishlist.length, wishlist });

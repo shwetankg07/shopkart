@@ -7,7 +7,6 @@ const findCartItem = (customer, productId) => {
   return customer.cart.find((item) => item.product.toString() === productId);
 };
 
-// every cart endpoint answers with the whole updated cart
 const sendCart = async (res, customerId, message) => {
   const customer = await Customer.findById(customerId).populate({
     path: "cart.product",
@@ -24,7 +23,6 @@ const sendCart = async (res, customerId, message) => {
     }
   }
 
-  // products deleted after being added come back as null, drop them for good
   if (cart.length < customer.cart.length) {
     await Customer.updateOne(
       { _id: customerId },
@@ -73,7 +71,6 @@ export const addToCart = async (req, res) => {
         { $set: { "cart.$.quantity": newQuantity } }
       );
     } else {
-      // the $ne check stops a double click from pushing two rows for one product
       await Customer.updateOne(
         { _id: req.user._id, "cart.product": { $ne: productId } },
         { $push: { cart: { product: productId, quantity: 1 } } }

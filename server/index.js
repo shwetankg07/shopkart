@@ -14,10 +14,8 @@ import { notFound, errorHandler } from "./middlewares/error.middleware.js";
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// CLIENT_URL can hold more than one origin, comma separated
 const allowedOrigins = process.env.CLIENT_URL.split(",").map((origin) => origin.trim());
 
-// the frontend lives on another origin, cookies only come through with credentials + exact origins
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());

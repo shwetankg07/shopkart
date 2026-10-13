@@ -5,7 +5,6 @@ export default function SearchBar({ search, category, sort, onChange }) {
   const [text, setText] = useState(search);
   const sent = useRef(search);
 
-  // the url changed without us typing (clear filters, back button), so show what it says now
   useEffect(() => {
     if (search !== sent.current) {
       sent.current = search;
@@ -13,7 +12,6 @@ export default function SearchBar({ search, category, sort, onChange }) {
     }
   }, [search]);
 
-  // wait until typing pauses before asking the server
   useEffect(() => {
     const value = text.trim();
     if (value === sent.current) return;

@@ -19,7 +19,6 @@ export const createProduct = async (req, res) => {
   try {
     const { name, description, price, category, stock } = req.body;
 
-    // an uploaded file wins, otherwise accept a plain image url (handy from postman)
     let image = req.body.image;
     if (req.file) {
       image = await uploadImage(req.file.buffer);

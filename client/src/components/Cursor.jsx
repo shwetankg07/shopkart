@@ -3,7 +3,6 @@ import { gsap } from "gsap";
 import { hasFinePointer, prefersReducedMotion } from "../lib/motion.js";
 import "./Cursor.css";
 
-// a cobalt dot that trails the pointer and opens up into a label over anything marked data-cursor
 export default function Cursor() {
   const dotRef = useRef(null);
   const labelRef = useRef(null);
@@ -44,7 +43,6 @@ export default function Cursor() {
     };
   }, []);
 
-  // gsap only moves the outer div, css scales the inner one. gsap takes over the transform of anything it moves
   return (
     <div className="cursor" ref={dotRef} aria-hidden="true">
       <div className="cursor-dot">

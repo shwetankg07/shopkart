@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { hasFinePointer, prefersReducedMotion } from "../../lib/motion.js";
 
-// React Bits "Variable Proximity": each letter's font axes move toward `to` as the pointer gets close
 const parseAxes = (settings) => {
   const axes = {};
   for (const part of settings.split(",")) {
@@ -29,7 +28,6 @@ export default function VariableProximity({ label, from, to, radius = 220, class
         if (!letter) continue;
         const rect = letter.getBoundingClientRect();
         const distance = Math.hypot(pointer.x - (rect.left + rect.width / 2), pointer.y - (rect.top + rect.height / 2));
-        // gaussian falloff: full effect under the pointer, fading out smoothly toward the radius
         const strength = Math.exp(-((distance / (radius / 2)) ** 2) / 2);
 
         const parts = [];

@@ -1,4 +1,3 @@
-// boots the real server against an in-memory mongo and walks the whole flow. run with npm test
 import assert from "node:assert";
 import { spawn } from "node:child_process";
 import crypto from "node:crypto";
@@ -281,7 +280,6 @@ try {
   res = await post("/orders/create-payment-order", { shippingAddress: { ...address, city: "   " } }, session);
   assert.equal(res.status, 400, "whitespace-only fields should be rejected");
 
-  // the dummy key gets turned away by razorpay (or there's no network), either way the cart must survive
   res = await post("/orders/create-payment-order", { shippingAddress: address }, session);
   assert.equal(res.status, 502, "a payment provider failure should be a 502");
   res = await get("/cart", session);
@@ -297,7 +295,6 @@ try {
   assert.match(body.message, /Insufficient stock/);
   await Product.updateOne({ _id: keyboardId }, { stock: 10 });
 
-  // razorpay can't be reached from a test, so plant the pending order it would have created
   const pending = await Order.create({
     user: customerId,
     items: [{ product: keyboardId, name: keyboard.name, price: keyboard.price, quantity: 1 }],

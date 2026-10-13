@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { hasFinePointer, prefersReducedMotion } from "../../lib/motion.js";
 
-// React Bits "Image Trail", trimmed down: moving the pointer throws photos out behind it
 const lerp = (a, b, n) => (1 - n) * a + n * b;
 
 class Trail {

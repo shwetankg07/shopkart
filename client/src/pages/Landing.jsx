@@ -22,7 +22,6 @@ const FEATURED = [
   "Succulent in Pot",
 ];
 
-// a fixed set reads best on the receipt, but if the admin changed the catalogue just take the first few
 const pickFeatured = (products) => {
   const picked = [];
   for (const name of FEATURED) {
@@ -46,13 +45,11 @@ export default function Landing() {
       .catch(() => setStatus("error"));
   }, []);
 
-  // pinned sections measure the page, so measure again once fonts and products have settled
   useEffect(() => {
     if (status !== "ready") return;
     document.fonts.ready.then(() => ScrollTrigger.refresh());
   }, [status]);
 
-  // memoised so a re-render doesn't hand the pinned sections new arrays and rebuild their timelines
   const featured = useMemo(() => pickFeatured(products), [products]);
 
   const aisles = useMemo(() => {

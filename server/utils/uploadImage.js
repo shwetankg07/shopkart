@@ -1,6 +1,5 @@
 import cloudinary from "../config/cloudinary.js";
 
-// multer keeps the file in memory, so stream the buffer straight to cloudinary
 export const uploadImage = (buffer) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(

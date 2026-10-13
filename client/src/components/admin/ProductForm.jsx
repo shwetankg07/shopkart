@@ -52,7 +52,6 @@ export default function ProductForm({ editing, onSubmit, onCancel }) {
     setMessage(null);
   }, [editing]);
 
-  // object urls hold memory until revoked
   useEffect(() => {
     if (!file) return;
     const url = URL.createObjectURL(file);

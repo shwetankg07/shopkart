@@ -8,7 +8,6 @@ import { serverError } from "../utils/serverError.js";
 
 const ADDRESS_FIELDS = ["fullName", "phone", "addressLine1", "city", "state", "pincode"];
 
-// returns an error message, or null when the address is fine
 const checkAddress = (address) => {
   if (!address) {
     return "Shipping address is required";
@@ -47,7 +46,6 @@ export const createPaymentOrder = async (req, res) => {
       return res.status(400).json({ message: "Your cart is empty" });
     }
 
-    // prices and stock come from the database right now, never from the request
     const items = [];
     let totalAmount = 0;
 
@@ -85,7 +83,6 @@ export const createPaymentOrder = async (req, res) => {
       totalAmount,
     });
 
-    // razorpay wants paise, not rupees
     let razorpayOrder;
     try {
       razorpayOrder = await razorpay.orders.create({
@@ -140,7 +137,6 @@ export const verifyPayment = async (req, res) => {
       return res.json({ success: true, message: "Payment already verified", order });
     }
 
-    // sign with the razorpay order id we stored, not one the browser sent
     const expected = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(order.razorpayOrderId + "|" + razorpay_payment_id)
@@ -180,7 +176,6 @@ export const verifyPayment = async (req, res) => {
 
 export const getMyOrders = async (req, res) => {
   try {
-    // an abandoned checkout leaves a PENDING_PAYMENT order behind, that isn't something the customer bought
     const orders = await Order.find({ user: req.user._id, status: { $ne: "PENDING_PAYMENT" } }).sort({
       createdAt: -1,
     });
@@ -199,7 +194,6 @@ export const getOrderById = async (req, res) => {
       return res.status(400).json({ message: "Invalid order id" });
     }
 
-    // filtering by user too means someone else's order id just looks like it doesn't exist
     const order = await Order.findOne({ _id: id, user: req.user._id });
 
     if (!order) {

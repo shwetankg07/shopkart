@@ -12,7 +12,6 @@ export default function useSmoothScroll() {
 
     const lenis = new Lenis({ lerp: 0.12 });
     lenis.on("scroll", ScrollTrigger.update);
-    // the page transition resets scroll through this
     window.__lenis = lenis;
 
     const tick = (time) => lenis.raf(time * 1000);

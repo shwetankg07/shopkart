@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// name, price and image are copied at purchase time so old orders don't change when a product does
 const orderItemSchema = new mongoose.Schema(
   {
     product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },

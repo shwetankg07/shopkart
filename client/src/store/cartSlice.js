@@ -34,7 +34,6 @@ export const removeItem = createAsyncThunk("cart/remove", async (productId, { re
   }
 });
 
-// the product id each mutation is working on, so only that row shows as busy
 const idOf = (action) => {
   if (typeof action.meta.arg === "string") return action.meta.arg;
   return action.meta.arg.productId;

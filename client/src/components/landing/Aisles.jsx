@@ -5,7 +5,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// vertical scrolling drives a sideways track of category panels, each photo wipes open as it arrives
 export default function Aisles({ aisles }) {
   const rootRef = useRef(null);
 
@@ -59,7 +58,6 @@ export default function Aisles({ aisles }) {
   }, [aisles]);
 
   return (
-    // gsap wraps a pinned element in a spacer div, this outer div is what react adds and removes, so it never loses track
     <div>
       <section className="aisles" ref={rootRef}>
         <div className="aisles-track">

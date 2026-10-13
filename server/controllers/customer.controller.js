@@ -54,7 +54,6 @@ export const loginCustomer = async (req, res) => {
 
     const customer = await Customer.findOne({ email: email.toLowerCase() });
 
-    // same 401 for a wrong email and a wrong password, otherwise anyone can check which emails exist
     let passwordOk = false;
     if (customer) {
       passwordOk = await bcrypt.compare(password, customer.password);
@@ -97,7 +96,6 @@ export const changePassword = async (req, res) => {
       return res.status(400).json({ message: "Password must be at least 6 characters" });
     }
 
-    // protect strips the password, so load it again here
     const customer = await Customer.findById(req.user._id);
     const oldPasswordOk = await bcrypt.compare(oldPassword, customer.password);
 

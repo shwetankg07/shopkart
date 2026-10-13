@@ -267,7 +267,6 @@ const products = [
   },
 ];
 
-// admin details come from .env so no password ever lives in the repo
 const seedAdmin = async () => {
   const { ADMIN_EMAIL, ADMIN_PASSWORD } = process.env;
 

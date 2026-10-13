@@ -32,7 +32,6 @@ export default function App() {
   const user = useSelector((state) => state.auth.user);
   const location = useLocation();
 
-  // routes render this lagging copy, so the old page stays put until the transition covers it
   const [displayLocation, setDisplayLocation] = useState(location);
 
   useEffect(() => {
@@ -52,7 +51,6 @@ export default function App() {
     return <BootScreen />;
   }
 
-  // same page with a new query string (search, filters) just follows along, no transition
   let shown = displayLocation;
   if (location.pathname === displayLocation.pathname) {
     shown = location;

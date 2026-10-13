@@ -16,7 +16,6 @@
   margin-left: -0.05em;
 }
 
-/* clip only along the bottom, so letters can rise into view without losing their overhangs */
 .vp-mask {
   display: inline-block;
   clip-path: inset(-20% -30% 0 -30%);
@@ -286,7 +285,6 @@
   grid-template-columns: repeat(4, 1fr);
 }
 
-/* without the pinned scroll the sideways sections simply stack */
 @media (max-width: 899px), (prefers-reduced-motion: reduce) {
   .print {
     grid-template-columns: 1fr;

@@ -10,7 +10,6 @@ export default function Home() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 
-  // only the server can say who the cookie belongs to, so ask it on every visit
   useEffect(() => {
     getMe()
       .then((res) => dispatch(setUser(res.data)))

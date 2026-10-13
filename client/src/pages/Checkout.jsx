@@ -94,7 +94,6 @@ export default function Checkout() {
 
     let data;
     try {
-      // only the address goes up. the server works out items, prices and the total itself
       const res = await createPaymentOrder(address);
       data = res.data;
     } catch (err) {
@@ -115,7 +114,6 @@ export default function Checkout() {
       modal: {
         ondismiss: () => fail("Payment cancelled. Your cart is still here."),
       },
-      // razorpay calling this doesn't prove anything yet, the server checks the signature first
       handler: async (response) => {
         setStep("confirming");
         try {

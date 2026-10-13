@@ -4,7 +4,6 @@ import { prefersReducedMotion } from "../lib/motion.js";
 
 const format = (value) => Math.round(value).toLocaleString("en-IN");
 
-// when the number changes it counts from the old value to the new one instead of jumping
 export default function TickingNumber({ value }) {
   const ref = useRef(null);
   const shown = useRef(value);

@@ -1,6 +1,5 @@
 let loading = null;
 
-// resolves false when the script can't load, so checkout can show an error
 export const loadRazorpay = () => {
   if (window.Razorpay) return Promise.resolve(true);
   if (loading) return loading;
