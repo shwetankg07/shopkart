@@ -2,6 +2,8 @@
 
 A small online store built across the six ShopKart lab statements. You can make an account, browse and search the catalogue, save products, fill a cart, pay through Razorpay test mode and follow your orders. There's an admin panel too, for adding products (photos go to Cloudinary) and moving orders from placed to delivered.
 
+Live: [shopkart-kappa-sable.vercel.app](https://shopkart-kappa-sable.vercel.app), with the API at [shopkart-hi2y.onrender.com](https://shopkart-hi2y.onrender.com/health). The API runs on Render's free tier and sleeps when idle, so the first visit can take up to a minute.
+
 ## Stack
 
 The frontend is React 19 on Vite, with Redux Toolkit for shared state and React Router for pages. Motion comes from GSAP, Lenis and a few React Bits components. The backend is Express 5 with Mongoose on MongoDB Atlas. Logins use a JWT in an httpOnly cookie, payments go through Razorpay and product photos are stored on Cloudinary.
@@ -46,7 +48,7 @@ npm run dev              # http://localhost:5173
 
 The server refuses to start if any variable in `.env.example` is missing, and it prints which ones.
 
-To try a payment, check out with one of the test cards or test UPI IDs listed in Razorpay's test mode docs. Test mode never charges anything.
+To try a payment, check out, pick Netbanking in the Razorpay window and choose any bank. Razorpay opens a test bank page where Success completes the order and Failure shows what a declined payment looks like. The test cards from Razorpay's test mode docs work too. Test mode never charges anything.
 
 `npm test` inside `server/` starts the real server against an in-memory MongoDB and walks through auth, products, wishlist, cart, checkout, payment verification, admin routes and error handling. It can't open Razorpay's checkout, so it plants a pending order and signs it with the test secret, which still exercises the signature check.
 
@@ -57,14 +59,14 @@ The database is a free MongoDB Atlas cluster. Create a database user, and under 
 The API goes on Render as a Web Service from this repo:
 
 - Root directory: `server`
-- Build command: `npm install`
+- Build command: `npm install --omit=dev` (skips `mongodb-memory-server`, which only the tests need)
 - Start command: `npm start`
 - Health check path: `/health`
-- Environment: everything from `server/.env.example`, plus `NODE_ENV=production`. Set `CLIENT_URL` to the Vercel address once you have it, with no trailing slash.
+- Environment: everything from `server/.env.example` except `PORT`, plus `NODE_ENV=production`. Without that last one the login cookie isn't sent between Vercel and Render, and every login drops straight away. Set `CLIENT_URL` to the Vercel address once you have it, with no trailing slash.
 
 Seed the production database once from your own machine by running `npm run seed` with `MONGO_URI` pointing at Atlas.
 
-The frontend goes on Vercel. Import the repo, set the root directory to `client` (Vercel detects Vite), and add `VITE_API_URL` with the Render address. `client/vercel.json` sends every path to `index.html`, so refreshing a page like `/products/<id>` still works.
+The frontend goes on Vercel. Import the repo, set the root directory to `client` (Vercel detects Vite), and add `VITE_API_URL` with the Render address. Vite bakes that value into the build, so redeploy after changing it. `client/vercel.json` sends every path to `index.html`, so refreshing a page like `/products/<id>` still works.
 
 Render's free tier puts the service to sleep after a stretch with no traffic. The first request after that takes a while, and the app shows a "waking up the store" screen until the API answers.
 
