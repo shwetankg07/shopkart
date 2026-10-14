@@ -13,11 +13,13 @@ const publicCustomer = (customer) => {
   };
 };
 
+const filled = (...values) => values.every((value) => typeof value === "string" && value.trim() !== "");
+
 export const registerCustomer = async (req, res) => {
   try {
     const { fullName, email, password, phone } = req.body;
 
-    if (!fullName || !email || !password || !phone) {
+    if (!filled(fullName, email, password, phone)) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -48,7 +50,7 @@ export const loginCustomer = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (!filled(email, password)) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -88,7 +90,7 @@ export const changePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
 
-    if (!oldPassword || !newPassword) {
+    if (!filled(oldPassword, newPassword)) {
       return res.status(400).json({ message: "Old and new password are required" });
     }
 

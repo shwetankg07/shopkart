@@ -83,6 +83,12 @@ try {
   res = await post("/customers/register", { ...customer, email: "b@b.com", password: "123" });
   assert.equal(res.status, 400, "short password should be rejected");
 
+  res = await post("/customers/register", { ...customer, email: "c@c.com", password: { length: 9 } });
+  assert.equal(res.status, 400, "a non-string password should be a 400, not a crash");
+
+  res = await post("/customers/login", { email: { $ne: null }, password: "anything" });
+  assert.equal(res.status, 400, "a non-string email should be a 400, not a crash");
+
   res = await get("/customers/me");
   assert.equal(res.status, 401, "/me must be protected");
 
