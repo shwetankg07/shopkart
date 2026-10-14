@@ -27,6 +27,7 @@ export default function AdminProducts() {
     try {
       if (editing) {
         await updateProduct(editing._id, data);
+        dispatch(showToast(`${editing.name} updated.`));
         setEditing(null);
       } else {
         await createProduct(data);
