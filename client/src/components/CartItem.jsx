@@ -22,7 +22,7 @@ export default function CartItem({ item }) {
 
   return (
     <li className={busy ? "cart-item is-busy" : "cart-item"}>
-      <Link to={`/products/${product._id}`} className="cart-thumb">
+      <Link to={`/products/${product._id}`} className="cart-thumb" tabIndex={-1} aria-hidden="true">
         <img src={product.image} alt="" onError={showFallbackImage} />
       </Link>
 

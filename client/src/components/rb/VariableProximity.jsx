@@ -53,7 +53,8 @@ export default function VariableProximity({ label, from, to, radius = 220, class
   }, [from, to, radius]);
 
   return (
-    <span className={className} ref={rootRef} aria-label={label}>
+    <span className={className} ref={rootRef}>
+      <span className="sr-only">{label}</span>
       {label.split("").map((letter, index) => (
         <span className="vp-mask" key={index} aria-hidden="true">
           <span
